@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Импульс және энергия</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #07152f, #102d5c, #061329);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: rgba(10, 25, 55, 0.95);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 180, 255, 0.25);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a9cfff;
+            margin-bottom: 25px;
+        }
+
+        /* Формулалар */
+        .formulas {
+            background: rgba(255,255,255,0.06);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .formulas h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #7dd3fc;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .formula {
+            background: rgba(0, 150, 255, 0.12);
+            border: 1px solid rgba(125, 211, 252, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .formula strong {
+            display: block;
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .formula span {
+            color: #a9cfff;
+            font-size: 13px;
+        }
+
+        /* Прогресс */
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #c8ddff;
+        }
+
+        .progress {
+            width: 100%;
+            height: 10px;
+            background: #17294b;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 10%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            transition: 0.4s;
+        }
+
+        /* Сұрақ */
+        .question-box {
+            background: rgba(255,255,255,0.06);
+            padding: 25px;
+            border-radius: 18px;
+        }
+
+        .question-number {
+            color: #7dd3fc;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .question {
+            font-size: 23px;
+            line-height: 1.4;
+            margin-bottom: 22px;
+        }
+
+        /* Жауаптар */
+        .answers {
+            display: grid;
+            gap: 12px;
+        }
+
+        .answer {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #35527c;
+            background: #102546;
+            color: white;
+            text-align: left;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .answer:hover {
+            background: #19365f;
+            transform: translateY(-2px);
+        }
+
+        .answer.correct {
+            background: #14532d;
+            border-color: #22c55e;
+        }
+
+        .answer.wrong {
+            background: #7f1d1d;
+            border-color: #ef4444;
+        }
+
+        .answer:disabled {
+            cursor: default;
+        }
+
+        /* Қызықты ереже */
+        .fact {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 15px;
+            background: linear-gradient(
+                135deg,
+                rgba(251, 191, 36, 0.12),
+                rgba(245, 158, 11, 0.08)
+            );
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            animation: appear 0.5s ease;
+        }
+
+        .fact h3 {
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .fact p {
+            line-height: 1.5;
+            color: #ffe9a8;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Келесі батырма */
+        .next-btn {
+            display: none;
+            margin: 20px auto 0;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #0ea5e9, #6366f1);
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .next-btn:hover {
+            transform: scale(1.03);
+        }
+
+        /* Нәтиже */
+        .result {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .result h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 55px;
+            font-weight: bold;
+            color: #7dd3fc;
+            margin: 15px;
+        }
+
+        .result p {
+            font-size: 19px;
+            margin: 10px;
+            color: #c9dcff;
+        }
+
+        .restart {
+            margin-top: 25px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Телефонға бейімдеу */
+        @media (max-width: 650px) {
+            .container {
+                padding: 18px;
+            }
+
+            .title {
+                font-size: 25px;
+            }
+
+            .formula-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .question {
+                font-size: 19px;
+            }
+
+            .answer {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div id="quiz">
+
+        <h1 class="title">⚡ ИМПУЛЬС ЖӘНЕ ЭНЕРГИЯ ⚡</h1>
+
+        <p class="subtitle">
+            Физика пәнінен интерактивті викторина
+        </p>
+
+        <!-- Формулалар -->
+        <div class="formulas">
+
+            <h2>📐 Негізгі формулалар</h2>
+
+            <div class="formula-grid">
+
+                <div class="formula">
+                    <strong>p = mv</strong>
+                    <span>Дене импульсі</span>
+                </div>
+
+                <div class="formula">
+                    <strong>I = FΔt</strong>
+                    <span>Күш импульсі</span>
+                </div>
+
+                <div class="formula">
+                    <strong>p₁+p₂=p₁′+p₂′</strong>
+                    <span>Импульстің сақталуы</span>
+                </div>
+
+                <div class="formula">
+                    <strong>Eₖ = mv²/2</strong>
+                    <span>Кинетикалық энергия</span>
+                </div>
+
+                <div class="formula">
+                    <strong>Eₚ = mgh</strong>
+                    <span>Потенциалдық энергия</span>
+                </div>
+
+                <div class="formula">
+                    <strong>E = Eₖ + Eₚ</strong>
+                    <span>Механикалық энергия</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Прогресс -->
+        <div class="progress-info">
+            <span id="questionCounter">Сұрақ: 1 / 10</span>
+            <span id="scoreText">Ұпай: 0</span>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Сұрақ -->
+        <div class="question-box">
+
+            <div class="question-number" id="questionNumber">
+                1-СҰРАҚ
+            </div>
+
+            <div class="question" id="question">
+                Сұрақ жүктелуде...
+            </div>
+
+            <div class="answers" id="answers"></div>
+
+            <!-- Қызықты ереже -->
+            <div class="fact" id="fact">
+
+                <h3>💡 Қызықты ереже!</h3>
+
+                <p id="factText"></p>
+
+            </div>
+
+            <button class="next-btn" id="nextBtn">
+                Келесі сұрақ →
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Нәтиже -->
+    <div class="result" id="result">
+
+        <h2>🎉 Викторина аяқталды!</h2>
+
+        <div class="score" id="finalScore">
+            0 / 10
+        </div>
+
+        <p id="correctAnswers">
+            Дұрыс жауаптар: 0
+        </p>
+
+        <p id="wrongAnswers">
+            Қате жауаптар: 0
+        </p>
+
+        <p id="resultMessage"></p>
+
+        <button class="restart" onclick="restartQuiz()">
+            🔄 Қайта бастау
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+    {
+        question: "Массасы 2 кг дене 5 м/с жылдамдықпен қозғалады. Оның импульсі неге тең?",
+        answers: [
+            "2 кг·м/с",
+            "5 кг·м/с",
+            "10 кг·м/с",
+            "25 кг·м/с"
+        ],
+        correct: 2,
+        fact: "Дененің импульсі масса мен жылдамдықтың көбейтіндісіне тең: p = mv. Сондықтан масса немесе жылдамдық артса, импульс те артады."
+    },
+
+    {
+        question: "Дене импульсінің дұрыс формуласы қайсы?",
+        answers: [
+            "p = ma",
+            "p = mv",
+            "p = mgh",
+            "p = F/t"
+        ],
+        correct: 1,
+        fact: "Жылдамдық 2 есе артса, масса өзгермеген жағдайда дененің импульсі де 2 есе артады."
+    },
+
+    {
+        question: "Күш импульсінің формуласы қайсы?",
+        answers: [
+            "I = FΔt",
+            "I = mv",
+            "I = mgh",
+            "I = ma"
+        ],
+        correct: 0,
+        fact: "Күш неғұрлым ұзақ уақыт әсер етсе, оның импульсі де соғұрлым үлкен болады."
+    },
+
+    {
+        question: "Массасы 3 кг дене 4 м/с жылдамдықпен қозғалады. Оның кинетикалық энергиясы неге тең?",
+        answers: [
+            "6 Дж",
+            "12 Дж",
+            "24 Дж",
+            "48 Дж"
+        ],
+        correct: 2,
+        fact: "Кинетикалық энергия жылдамдықтың квадратына тәуелді: Eₖ = mv²/2. Сондықтан жылдамдық 2 есе артса, энергия 4 есе артады."
+    },
+
+    {
+        question: "Импульстің сақталу заңы нені білдіреді?",
+        answers: [
+            "Дене әрқашан тыныштықта болады",
+            "Тұйық жүйеде толық импульс сақталады",
+            "Энергия әрқашан нөлге тең",
+            "Масса міндетті түрде өзгереді"
+        ],
+        correct: 1,
+        fact: "Импульстің сақталу заңы әсіресе соқтығысу, жарылу және реактивті қозғалыс кезінде маңызды."
+    },
+
+    {
+        question: "Массасы 2 кг дене 10 м биіктікте орналасқан. g = 10 м/с² болса, потенциалдық энергиясы қанша?",
+        answers: [
+            "20 Дж",
+            "100 Дж",
+            "200 Дж",
+            "400 Дж"
+        ],
+        correct: 2,
+        fact: "Дене биіктеген сайын оның потенциалдық энергиясы артады. Формуласы: Eₚ = mgh."
+    },
+
+    {
+        question: "Кинетикалық энергия қандай шамаға байланысты?",
+        answers: [
+            "Тек биіктікке",
+            "Масса мен жылдамдыққа",
+            "Тек уақытқа",
+            "Тек күшке"
+        ],
+        correct: 1,
+        fact: "Кинетикалық энергия қозғалыстағы денеге тән энергия. Оның негізгі формуласы Eₖ = mv²/2."
+    },
+
+    {
+        question: "Механикалық энергияның формуласы қайсы?",
+        answers: [
+            "E = FΔt",
+            "E = mv",
+            "E = Eₖ + Eₚ",
+            "E = ma"
+        ],
+        correct: 2,
+        fact: "Механикалық энергия кинетикалық және потенциалдық энергиялардың қосындысынан тұрады."
+    },
+
+    {
+        question: "Массасы 5 кг дененің жылдамдығы 2 м/с. Оның импульсі қандай?",
+        answers: [
+            "2,5 кг·м/с",
+            "7 кг·м/с",
+            "10 кг·м/с",
+            "20 кг·м/с"
+        ],
+        correct: 2,
+        fact: "Импульстің өлшем бірлігі — кг·м/с. Импульс дененің қозғалыс мөлшерін сипаттайды."
+    },
+
+    {
+        question: "Массасы 2 кг дене 6 м/с жылдамдықпен қозғалады. Оның кинетикалық энергиясы қанша?",
+        answers: [
+            "6 Дж",
+            "12 Дж",
+            "18 Дж",
+            "36 Дж"
+        ],
+        correct: 3,
+        fact: "Жылдамдық энергияға өте қатты әсер етеді, себебі формулада v² бар. Жылдамдық артқанда кинетикалық энергия одан да тез өседі."
+    }
+
+];
+
+
+let currentQuestion = 0;
+let score = 0;
+
+const questionElement = document.getElementById("question");
+const answersElement = document.getElementById("answers");
+const questionCounter = document.getElementById("questionCounter");
+const questionNumber = document.getElementById("questionNumber");
+const scoreText = document.getElementById("scoreText");
+const progressBar = document.getElementById("progressBar");
+const fact = document.getElementById("fact");
+const factText = document.getElementById("factText");
+const nextBtn = document.getElementById("nextBtn");
+
+
+// Сұрақты көрсету
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    questionElement.textContent = q.question;
+
+    questionCounter.textContent =
+        `Сұрақ: ${currentQuestion + 1} / ${questions.length}`;
+
+    questionNumber.textContent =
+        `${currentQuestion + 1}-СҰРАҚ`;
+
+    scoreText.textContent =
+        `Ұпай: ${score}`;
+
+    progressBar.style.width =
+        `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+    answersElement.innerHTML = "";
+
+    fact.style.display = "none";
+
+    nextBtn.style.display = "none";
+
+
+    q.answers.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.classList.add("answer");
+
+        button.textContent =
+            `${String.fromCharCode(65 + index)}) ${answer}`;
+
+        button.onclick = () =>
+            selectAnswer(index, button);
+
+        answersElement.appendChild(button);
+
+    });
+
+}
+
+
+// Жауапты таңдау
+function selectAnswer(selected, selectedButton) {
+
+    const q = questions[currentQuestion];
+
+    const buttons =
+        document.querySelectorAll(".answer");
+
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+
+
+    if (selected === q.correct) {
+
+        selectedButton.classList.add("correct");
+
+        score++;
+
+        scoreText.textContent =
+            `Ұпай: ${score}`;
+
+    } else {
+
+        selectedButton.classList.add("wrong");
+
+        buttons[q.correct].classList.add("correct");
+
+    }
+
+
+    // Қызықты ережені көрсету
+    factText.textContent = q.fact;
+
+    fact.style.display = "block";
+
+    nextBtn.style.display = "block";
+
+}
+
+
+// Келесі сұрақ
+nextBtn.onclick = function() {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+    } else {
+
+        showResult();
+
+    }
+
+};
+
+
+// Нәтиже
+function showResult() {
+
+    document.getElementById("quiz").style.display = "none";
+
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("finalScore").textContent =
+        `${score} / ${questions.length}`;
+
+    document.getElementById("correctAnswers").textContent =
+        `Дұрыс жауаптар: ${score}`;
+
+    document.getElementById("wrongAnswers").textContent =
+        `Қате жауаптар: ${questions.length - score}`;
+
+
+    let message = "";
+
+    if (score >= 9) {
+
+        message =
+            "🏆 Керемет! Физиканы өте жақсы меңгергенсің!";
+
+    } else if (score >= 7) {
+
+        message =
+            "👏 Жақсы нәтиже! Біліміңді одан әрі толықтыр!";
+
+    } else if (score >= 5) {
+
+        message =
+            "📚 Жаман емес! Формулаларды тағы бір қайталап көр!";
+
+    } else {
+
+        message =
+            "💪 Тағы да дайындалып көр! Сенің қолыңнан келеді!";
+
+    }
+
+    document.getElementById("resultMessage").textContent =
+        message;
+
+}
+
+
+// Қайта бастау
+function restartQuiz() {
+
+    currentQuestion = 0;
+
+    score = 0;
+
+    document.getElementById("result").style.display = "none";
+
+    document.getElementById("quiz").style.display = "block";
+
+    showQuestion();
+
+}
+
+
+// Алғашқы сұрақты іске қосу
+showQuestion();
+
+</script>
+
+</body>
+</html>
